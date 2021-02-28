@@ -92,7 +92,16 @@
 \usepackage{ellipsis}
 \let\ellipsispunctuation\relax
 
+\usepackage{xcolor, soul}
+
 \input{lst.tex} % code styles (listings)
+
+\colorlet{hlcolor}{lightgray!20}
+\sethlcolor{hlcolor}
+
+\DeclareRobustCommand{\texttt}[1]{%
+  \hl{\ttfamily#1}%
+}
 
 % use this custom theorem for research questions
 \newtheorem{researchquestion}{Research Question}
@@ -104,6 +113,8 @@
   {\end{tabular}\par\vspace{\belowdisplayskip}}
 
 \usepackage{float}
+
+\usepackage{xcolor}
 
 % configure the name of your appendix
 \renewcommand\appendixtocname{Anhang}
@@ -161,17 +172,15 @@
 
   % this is where your thesis lives
 
-  \input{sections/introduction.tex}
+  \input{sections/01_introduction.tex}
+  \input{sections/02_basics.tex}
+  \input{sections/03_analysis.tex}
+  \input{sections/04_concept.tex}
+  \input{sections/05_summary.tex}
 
   \newpage
 
   % use lowercased roman page numbers for the appendix and the bibliography
   \pagenumbering{roman}
-
-  \printbibliography[heading=bibintoc]\label{sec:bibliography}%
-
-  \begin{appendices}
-    \input{sections/appendix.tex}
-  \end{appendices}
 
 \end{document}

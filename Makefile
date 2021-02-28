@@ -4,21 +4,21 @@ DIR:=$(shell sh -c "pwd")
 USER_ID:=$(shell sh -c "id -u")
 USER_NAME:=$(shell sh -c "id -u -n")
 USER_HOME:=/home/latex
-BASE_IMAGE:=aergus/latex
-DOCKER_IMAGE:=mustermann/latex
+BASE_IMAGE:=kaestner/latex:edge
+DOCKER_IMAGE:=kaestner/output-app
 
 .PHONY: all
 
 thesis:
 	@docker build --output ./ .
 
-serve:
-	@docker run --rm -v $(DIR):$(USER_HOME) $(DOCKER_IMAGE) bash -c "latexmk -quiet -pdf -pvc -view=none thesis"
+shell: container
+	@docker run -it --rm -v $(DIR):$(USER_HOME) $(DOCKER_IMAGE) bash
 
-clean:
+clean: container
 	@docker run --rm -v $(DIR):$(USER_HOME) $(DOCKER_IMAGE) bash -c "latexmk -C"
 
-count:
+count: container
 	@docker run --rm -v $(DIR):$(USER_HOME) $(DOCKER_IMAGE) bash -c "texcount -inc thesis.tex"
 
 container:
