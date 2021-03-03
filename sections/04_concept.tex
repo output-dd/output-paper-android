@@ -1,1 +1,72 @@
 \chapter{Konzept und Implementation}\label{ch:konzept}
+
+Im Folgenden sollen die in \Cref{ch:grundlagen} beschriebenen Grundlagen und Entwurfsmuster genutzt werden und um anhand der in \Cref{ch:analyse} analysierten Komponenten ein Konzept sowie die dazugehörige Implementierung vorzustellen.
+
+\section{Top-Level-Architektur}
+
+Um die in \Cref{se:problem} aufgeführten strukturellen Problemen beheben zu können, wurde zu Beginn der Arbeit eine geeignete Ordner- und Applikationsstruktur festgelegt. Mit der Grundlage der erstellten Dialoglandkarte aus \Cref{se:map} und der Kenntnis der Datenbank-Framework aus \Cref{se:framework} konnte eine Top-Level-Architektur-Modell (TLA) erstellt werden. Dabei werden die verschiedenen Aspekte der Anwendung weitestgehend unabhängige Komponenten unterteilt, die separat entwickelt werden können. Entsprechend dieser Unterteilung ließen sich die folgenden Komponenten ableiten, die anschließend in eigenen \texttt{Packages} implementiert wurden:
+
+\begin{itemize}
+    \item Im Root-Verzeichnis des Repositories befinden sich Konfigurationsdateien des Build-Tools Gradle sowie Hilfsdateien, die nicht direkt zur Codebasis der App gehören. Außerdem befindet sich an dieser Stelle das Applikationsverzeichnis.
+    \textbf{de.outputdd.android} beinhaltet in der obersten Applikationsebene globale Klassen, wie die \texttt{OutputApplication}, \texttt{MainActivity} und \texttt{GameService} Klasse. Diesen bilden die Basis der Applikation und stellen notwendige Funktionalität bereit, welche in allen Bereichen der App genutzt wird, wie unter anderem die Instanziierung der Repository-Objekte.
+    \item \textbf{de.outputdd.android.common} stellt eine Reihe von Komponenten und Erweiterungen bereit, welche die bestehende Android-Bibliothek ergänzen, beispielsweise eine Ansammlung von \texttt{Extensions}\footnote{Extensions \url{https://kotlinlang.org/docs/extensions.html}} welche häufig wiederverwendet werden um die Lesbarkeit und Komplexität des Quellcodes zu verbessern.  
+    \item \textbf{de.outputdd.android.game} umfasst die Funktionalitäten der Gamification. Dabei stehen generische Klassen für verschiedene Aufgaben-Typen des OUTPUT-Spiels bereit.
+        \begin{itemize}
+            \item \textbf{de.outputdd.android.game.observer} enthält alle für das Spiel eingesetzten Aufgaben, die eine Nutzer erfüllen kann. Diese werden von eigenständigen Klassen implementiert.
+        \end{itemize} \newpage
+    \item \textbf{de.outputdd.android.ui} ist die mächtigste Komponente, da sie die Fragmente aller Ansichten der App sowie die dafür notwendigen Views und Adapter kapselt. 
+        \begin{itemize}
+            \item \textbf{de.outputdd.android.ui.adapter} besteht aus generischen Klassen, welche in vielen Ansichten wiederverwendet werden um die \texttt{RecyclerView}\footnote{RecyclerView. \url{https://developer.android.com/guide/topics/ui/layout/recyclerview}}- sowie \texttt{Viewpager2}\footnote{Viewpager2. \url{https://developer.android.com/training/animation/screen-slide-2}}-Instanzen der App zu konfigurieren. Hinzu kommen eine Reihe von Binding-Adaptern\footnote{Binding-Adapter. \url{https://developer.android.com/topic/libraries/data-binding/binding-adapters}} die das Konzept von \texttt{Databinding} aus \Cref{subsec:databinding} um eigene Attribute erweitert.
+            \item \textbf{de.outputdd.android.ui.dialog} umfasst die Dialog-Ansichten der App, welche als \texttt{BottomSheetDialogFragment}\footnote{BottomSheetDialogFragment. \newline \url{https://material.io/develop/android/components/bottom-sheet-dialog-fragment}} umgesetzt wurden.
+            \item \textbf{de.outputdd.android.ui.feed} stellt alle Twitter-Funktionalitäten bereit, inklusive der Timeline-Ansicht und der Möglichkeit, neue Tweets zu erstellen.
+            \item \textbf{de.outputdd.android.ui.game} beinhaltet alle Ansichten, die im Zusammenhang mit dem OUTOUT-Spiel stehen, darunter die Spieler-Registrierung, die Fortschrittsansicht und die Rangliste.
+            \item \textbf{de.outputdd.android.ui.home} realisiert die Home-Ansicht der App, welche als Verknüpfung zwischen den verschiedenen Ansichten dient.
+            \item \textbf{de.outputdd.android.ui.info} stellt die Ansichten der Info-View zur Verfügung, darunter die Lizenz-Ansicht, Danksagung aber auch die Informationen des Crowd-Monitorings und des Datenschutzes.
+            \item \textbf{de.outputdd.android.ui.map} ist verantwortlich für die Kartenansicht der App, inklusive der Heatmap, Stände und Eroberungen.
+            \item \textbf{de.outputdd.android.ui.program} beinhaltet den Veranstaltungsplan der Messe. Neben der Übersicht lassen die Beiträge auch nach Kategorie und Freitextsuche filtern. Eine Detailansicht gibt die vollständigen Informationen einer Veranstaltung wieder.
+            \item \textbf{de.outputdd.android.ui.scan} realisiert die Ansicht des QRCode-Scanners und der damit verbundenen Auswertung von gescannten Codes.
+            \item \textbf{de.outputdd.android.ui.tutorial} stellt das App-Tutorial zur Verfügung, um dem Nutzer nach Installation der App in die verschiedenen Ansichten einzuführen.
+            \item \textbf{de.outputdd.android.ui.widget} bietet eigene View-Klassen, die in den verschieden Layouts genutzt werden und die bestehenden View-Klassen der Android Bibliothek um weitere Funktionen ergänzen.
+        \end{itemize}
+\end{itemize}
+
+\newpage
+
+\section{Programmier-Richtlinien}
+
+Um das Projekt bestmöglich auf die Weiterentwicklung vorzubereiten wurden eine Reihe von Vorkehrungen getroffen. 
+\newline Da die Android-App potenziell von mehreren Nutzern auf den verschiedenen Betriebssystemen entwickelt werden kann, wurde eine entsprechende Konfigurationsdatei ergänzt, welche dafür sorgt, dass die Quellcode-Dateien über konsistente Zeilenenden verfügen. Anhand einer \texttt{.gitattributes}-Datei im Root-Verzeichnis des Repository werden Dateien beim \enquote{Checkout} von Git automatisch konvertiert. Dadurch können fehlerhafte Änderungs-Anzeigen vermieden und zugleich eine potenzielle Fehlerquelle ausgeschlossen werden.\newline Um jede Datei mit einem deskriptiven Kommentar auszustatten, wurde sich im Projektteam für die Einführung eines Copyright-Hinweis entschieden. Um Diskrepanzen zwischen dem Dateinamen und dem Hinweis zu verhindern, wurde im Rahmen des Projektes ein Copyright-Template erstellt, um anschließend im Projekt eingebunden und auf alle Dateien angewendet werden zu können. Wie in \Cref{fig:copyright} dargestellt, enthält das Copyright-Template zusätzlich zu Hinweisen und Links über die Herkunft des Quellcodes auch einen Link zu den Richtlinien der Weiterentwicklung. Das Template ist dabei bewusst so ausgelegt, dass sich mehrere Autoren inklusive ihrer Kontaktinformationen eintragen können. Letzteres ist wichtig, da sich im Projektteam noch nicht auf eine Lizenzierung der Apps unter Open-Source-Lizenzen festgelegt wurde und daher der Quellcode unter das Kopierrecht des Autors fallen. Wenn eine Weiterverwendung des Codes über den ursprünglich dafür bestimmten Rahmen stattfindet, so können die Autoren hierüber kontaktiert werden.
+
+\begin{figure}[H]
+    \includegraphics[width=1\linewidth]{copyright.png}
+    \caption{Copyright-Template der App.}\label{fig:copyright}
+\end{figure}
+
+Um die Probleme der Codequalität der vorhergehenden App zu vermeiden, wird das in Android-Studio integrierte Analyse und Formatierungs-Werkzeug genutzt, um die Codequalität aufrechtzuerhalten. Diese wird bei jedem Commit geprüft und dem Entwickler als Warnung anzeigt. Zukünftige Entwickler sind dazu angehalten diese Meldungen nicht zu ignorieren, sondern ihnen stattdessen Aufmerksamkeit zu schenken und entsprechende Verbesserungen durchzuführen. Durch das Interaktions-Menü welches in Android Studio integriert ist, wird es dem Entwickler erleichtert, auf Feedback einzugehen und Anpassungen schnell und unkompliziert durchzuführen.
+
+\newpage
+
+\section{Umsetzung der Ansichten}
+
+Mit der vorliegenden Konzeption zur Unterteilung der Komponenten und den etablierten Richtlinien begann die Umsetzung der Ansichten. Die Implementation der Ansichten fand dabei zunächst unabhängig vom Datenbank-Backend statt. Stattdessen wurden Beispieldaten verwendet, um die Views zu generieren. Gleichzeitig wurde allerdings bereits großer Wert auf die Strukturierung der ViewModels gelegt, um im späteren Verlauf die Beispieldaten auf einfache Weise durch das Datenbank-Backend ergänzen zu können. Dadurch ergaben sich die Vorteile im Entwicklungsprozess, da die Ansichten in einem schnelleren Entwicklungszyklus erstellt werden konnten und die notwendige Separation leichter umsetzbar war. Im Folgenden konnte bereits nach wenigen Wochen die Benutzeroberfläche zwischen der iOS und Android App abgeglichen werden.
+
+\subsection{Erstellung von Fragments}
+
+Um die in \Cref{subsec:viewbinding} und \Cref{subsec:databinding} vorgestellten Konzepte von Viewbinding und Databinding zu Nutzen, empfiehlt die offizielle Dokumentation\footnote{Viewbinding in Fragments. \url{https://developer.android.com/topic/libraries/view-binding\#fragments}} die Nutzung von \texttt{Backing-Properties}\footnote{Backing-Properties. \url{https://kotlinlang.org/docs/reference/properties.html\#backing-properties}} in Kotlin.Dabei entsteht inhärent eine gewisse Verbosität. Damit diese Umstände vermieden werden konnte, wurde eine entsprechende Lösung anhand der Klasse \texttt{AutoClearedValue} eingeführt. Diese Klasse beobachtet einfach den Lebenszyklus des Fragments und invalidiert Zugriffe, sobald sich das Fragment im \texttt{onDestroy}-Status befindet. Mittels einer \texttt{Extension}\footnote{Extension. \url{https://kotlinlang.org/docs/extensions.html}} konnte die Verwendung der Klasse über \texttt{Delegated Properties}\footnote{Delegated Properties. \url{https://kotlinlang.org/docs/reference/delegated-properties.html}} bereitgestellt werden. Anhand des in \Cref{subsec:delegation} beschrieben Pattern von Delegation kann die entsprechende Variable in die Nutzung innerhalb der Fragment-Klasse eingebunden werden. Da es sich im Allgemeinen empfiehlt während der \texttt{onCreateView} eines Fragments nur äußerst sparsame Operationen vorzunehmen und stattdessen komplexe Anwendungslogik in die \texttt{onViewCreated} auszulagern, ergibt sich folgender Aufbau der Ansichten:
+
+\begin{figure}[H]
+    \includegraphics[width=1\linewidth]{fragment.png}
+    \caption{Ausschnitt des Quellcodes des Home-Fragments.}\label{fig:fragment}
+\end{figure}
+
+\newpage
+
+In \Cref{fig:fragment} zu sehen ist ein Ausschnitt des Quellcodes der Home-Ansicht. Dabei zu sehen ist die Nutzung des in \Cref{subsec:delegation} vorgestellten Prinzips von Delegation zur Bereitstellung der Klassen-Member. Neben der Verwendung der Methode \texttt{autoCleared()} zur Erstellung einer Instanz der Klasse \texttt{AutoClearedValue} wie oben beschrieben, ist auch die Delegation zur Erstellung von ViewModel-Instanzen zu sehen. Dies geschieht mittels der Methoden \texttt{viewModels()} und \texttt{activityViewModels()} die als Teil von Android KTX\footnote{Android KTX \url{https://developer.android.com/kotlin/ktx}} bereitstehen.
+
+\subsection{Verwendung von Viewmodels}
+
+
+
+\section{Anbindung der Gamification}
+
+\section{Integration und Testen}

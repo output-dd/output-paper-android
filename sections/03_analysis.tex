@@ -2,7 +2,7 @@
 
 Um ein konkretes Lösungskonzept zu entwickeln, musste die bestehende App zunächst analysiert werden. Im Folgenden werden die verschiedenen Aspekte dieser Phase erläutert, um anschließend in \Cref{ch:konzept} die konkreten Lösungskonzepte vorzustellen.
 
-\section{Struktur des Couchbase-Datenbank-Frameworks}
+\section{Struktur des Couchbase-Datenbank-Frameworks}\label{se:framework}
 
 Für die Persistierung von Daten bieten sich eine Vielzahl von Möglichkeiten. Während sich kleinere Datenmengen (< 1.42 MB) für nutzerbezogene Daten bereits in den \texttt{SharedPreferences}\footnote{SharedPreferences. \url{https://developer.android.com/reference/android/content/SharedPreferences}} speichern lassen, so bietet die Android-Platform mit \texttt{Room}\footnote{Room. \url{https://developer.android.com/training/data-storage/room}} eine umfängliche Bibliothek zur Erstellung von SQLite-Datenbanken. Eine Funktionalität die beiden Implementationen allerdings fehlt, ist die Synchronisierung mit einem Remote-Server. Zeitgleich sollten die Daten lokal persistiert werden, um die App auch ohne Internetzugriff vollständig bedienen zu können. Aus diesen Anforderungen ergeben sich nur eine geringe Anzahl an Frameworks, die für die Nutzung im Rahmen der OUTPUT-App zutreffend sind. Da die Nutzungskonditionen des Dienstes Realm starke Limitationen aufweisen, fiel die Entscheidung zukünftig stattdessen das Framework Couchbase verwenden zu wollen. Aus diesem Grund wurden im Verlauf des Sommersemesters 2020 Datenbank-Frameworks erstellt, welche die Bereitstellung von Daten für die App sowie die notwendige Synchronisationsfunktion beinhalten. Um die Komplexität des Couchbase-Frameworks zu Kapseln abstrahieren die Bibliotheken Zugriffe auf die Dokumente sowie Serialisierung und Deserialisierung von Daten und stellen den jeweiligen Apps damit eine Schnittstelle für den Datenzugriff zur Verfügung. Die zentrale Idee hinter der Umsetzung bildete das Repository-Pattern. Dabei stehen verfügbaren Operationen zum Erstellen, Lesen, Schreiben und Löschen von Daten zur Verfügung, während die zugrunde liegende Implementierung des Couchbase-Frameworks versteckt wird. Diese Metastruktur des Frameworks ist in \Cref{fig:metaframework} gezeigt.
 
@@ -21,7 +21,7 @@ Um die in Dokumenten abgelegten Daten in ein objektorientiertes Schema überfüh
     \caption{Generisches Konzept zur Umsetzung des Repository-Patterns für Model-Klassen.}\label{fig:generic}
 \end{figure}
 
-\section{Ermittlung einer Dialoglandkarte}
+\section{Ermittlung einer Dialoglandkarte}\label{se:map}
 
 Da die Android-App in ihrer Fassung ohne weiteres abstürzte und in sich in keinem nutzbaren Zustand befand, wurde die bestehende iOS-App analysiert. Ziel dieser Arbeit war es, eine Dialoglandkarte zu erstellen, anhand welcher die Navigationswege eines Nutzers in der App nachvollzogen werden konnte. Gleichzeitig sollte die erstellte Übersicht eine topologische Ordnung der Ansichten bieten und die genutzten UI-Elemente aufzeigen. Die in \Cref{fig:mindmap} abgebildete Dialoglandkarte beinhaltet bereits eine Gruppierung von Ansichten in eigenständige Teilbereiche der App, die für die nachfolgende Implementierung in separaten Komponenten nützlich war. Durch die Pfeile zwischen Ansichten konnten die Daten- und Navigationsflüsse innerhalb der App aufbereitet werden. 
 
@@ -29,5 +29,3 @@ Da die Android-App in ihrer Fassung ohne weiteres abstürzte und in sich in kein
     \includegraphics[width=1\linewidth]{mindmap.pdf}
     \caption{Die Dialoglandkarte zur vorangegangenen Version der iOS App zeigt die Navigationswege innerhalb der App, sowie die genutzten UI-Elemente.}\label{fig:mindmap}
 \end{figure}
-
-

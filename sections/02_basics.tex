@@ -2,7 +2,7 @@
 
 In diesem Kapitel werden wichtige Grundlagen dargelegt, die zum Verständnis der in den nachfolgenden Kapiteln beschriebenen Projektbearbeitungsschritte und -entscheidungen notwendig sind.
 
-\section{Kotlin}
+\section{Kotlin}\label{sec:kotlin}
 
 Für die Neuimplementation fiel die Wahl der Programmiersprache auf von \texttt{Jetbrains}\footnote{Jetbrains. \url{https://www.jetbrains.com/}} entwickelte Programmiersprache \texttt{Kotlin}\footnote{Kotlin. \url{https://kotlinlang.org/}}. Kotlin wird seit der Google I/O im Jahre 2019 von Google als primäre Programmiersprache für Android empfohlen. Während die Implementierung mit Java weiterhin unterstützt wird, findet die zukünftige Entwicklung der Android Platform zunehmend \enquote{Kotlin-First}\footnote{Kotlin-First. \url{https://developer.android.com/kotlin/first}} statt. Kotlin ist eine ausdrucksstarke und prägnante Programmiersprache, die häufige Codefehler reduziert und sich leicht in bestehende Apps integrieren lässt. Da die Entwicklungsumgebung Android Studio auf der von Jetbrains entwickelten IDE IntelliJ beruht, kann somit auch eine optimale Integration in den Entwicklungsprozess gewährleistet werden. Google beteiligt sich gleichzeitig in der Weiterentwicklung von Kotlin, indem sie zur Verbesserung der Compiler-Leistung und der Build-Geschwindigkeit beitragen und ist teil der \texttt{Kotlin Foundation}\footnote{Kotlin Foundation. \url{https://kotlinlang.org/docs/kotlin-foundation.html}}. Insgesamt stellt Kotlin eine optimale Programmiersprache für die Entwicklung von Android-Apps dar. Zu den Vorteilen zählen unter anderem:   
 
@@ -86,7 +86,7 @@ Sobald der Nutzer innerhalb der App navigiert, wird das entsprechende Fragment d
 \end{figure}
 
 
-\subsection{Viewbindung}
+\subsection{Viewbindung}\label{subsec:viewbinding}
 
 Um einfacher mit den Ansichten interagieren zu können wird eine Technik names \texttt{Viewbinding}\footnote{Viewbinding. \url{https://developer.android.com/topic/libraries/view-binding}} verwendet. Durch die Aktivierung dieses Build-Features wird automatisch, für jede vorhandene XML-Layout-Datei eine Binding-Klasse erzeugt. Eine Instanz dieser Binding-Klasse enthält direkte Verweise auf alle Ansichten, die eine ID in dem entsprechenden Layout haben. Die Verwendung von Viewbinding erlaubt somit die objektorientierte Verwendung von Views und ersetzt gleichzeitig die Funktionalität der \texttt{findViewById}-Methode. In Bezug auf die in \Cref{lst:layout} gezeigte Layout-Datei ergibt sich die in \Cref{fig:viewbinding} dargestellte Nutzung im Quellcode.
 
@@ -95,7 +95,7 @@ Um einfacher mit den Ansichten interagieren zu können wird eine Technik names \
     \caption{Beispiel für die Nutzung von Viewbinding.}\label{fig:viewbinding}
 \end{figure}
 
-\subsection{Databinding}
+\subsection{Databinding}\label{subsec:databinding}
 
 \texttt{Databinding}\footnote{Databinding. \url{https://developer.android.com/topic/libraries/data-binding}} ermöglicht es UI-Komponenten in Layouts an Datenquellen in der App zu binden, indem sie ein deklaratives Format verwenden. Durch die Verknüpfung von Views mit entsprechenden Daten-Variablen können programmatische Aufrufe im Quellcode reduziert werden. Dies führt nicht nur dazu, dass der Code leichter zu pflegen ist, sondern kann auch die Leistung der App verbessern und helfen, Memory-Leaks und Null-Pointer-Exceptions zu vermeiden. Äquivalent zum Fall von Viewbinding werden entsprechende Binding-Klassen automatisch generiert. Im Folgenden werden Variablen innerhalb eines \texttt{data} Blocks im XML-Layout definiert. Diese können anschließend genutzt werden, um die Attribute der Views zu konfigurieren. Die Abbildung der Daten kann sowohl \textbf{unidirektional} als auch \textbf{bidirektional} erfolgen. Die Zuweisung von Variablen erfolgt dabei einmalig zum Zeitpunkt der Initialisierung der View. Sobald sich nun die zugrunde liegenden Daten ändern, wird die View automatisch aktualisiert und erneut gerendert. \Cref{lst:databinding} zeigt die Verwendung von Databinding am Beispiel einer Trophäe in der Spielansicht. Die resultierende Ansicht ist in \Cref{fig:databinding} gezeigt.
 
@@ -168,7 +168,7 @@ Es werden verschiedene Patterns vorgestellt, die sich im Implementationskonzept 
 
 \newpage
 
-\subsection{Observer-Pattern}
+\subsection{Observer-Pattern}\label{sub:observer}
 
 Das \textbf{Observer-Pattern} ist ein weiteres Entwurfsmuster, welches in der Android-Entwicklung eine zentrale Rolle spielt. Es gehört zur Kategorie der Verhaltensmuster und dient zur Weitergabe von Änderungen an abhängige Datenstrukturen. Damit lassen sich Ereignis-basierte Abläufe programmieren. In der für die Android-Entwicklung üblichen Variante des Observer-Patterns, informiert ein Objekt (genannt \texttt{Subjekt}) alle  abhängigen Objekte (genannt \texttt{Observer}) von Änderungen und überträgt dabei jeweils eine aktuelle Kopie der Daten als Parameter. Der Ablauf ist in \Cref{fig:observer} gezeigt. Diese Form wird auch \texttt{Push-Update Observer} genannt. 
 
@@ -176,3 +176,12 @@ Das \textbf{Observer-Pattern} ist ein weiteres Entwurfsmuster, welches in der An
     \includegraphics[width=0.65\linewidth]{observer.png}
     \caption{Aufbau des Observer-Pattern.}\label{fig:observer}
 \end{figure}
+
+\subsection{Mediator-Pattern}
+
+Wie auch das \hyperref[sub:observer]{Observer-Pattern} zählt das \texttt{Mediator-Pattern} zu der Klasse von Verhaltensmustern. Das Mediator-Pattern richtet sich dabei an den Informationsaustausch zwischen Objekten. Die Kommunikation findet mittels eines sogenannten \texttt{Mediator}-Objekts statt, welches als Schnittstelle zwischen den beteiligten Objekten dient. Dadurch kann das kooperative Verhalten zentral verwaltet werden, wobei die Implementierung des \texttt{Mediator} unabhängig der beteiligten Objekte erfolgen kann. Somit kann eine lose Kopplung geschaffen werden, was zugleich die Komplexität der beteiligten Objekte mindert. 
+
+
+\subsection{Delegation-Pattern}\label{subsec:delegation}
+
+Das \texttt{Delegation-Pattern} ist ein strukturelles Entwurfsmuster, welches die Bildung von Objekten erleichtert und damit als Alternative zur Vererbung die Wiederverwendung von Implementationen erlaubt. Das Prinzip des Patterns beruht auf der Weitergabe von Aufrufen (\enquote{Delegation}) an ein weiteres Objekt. Die Auswertung des Zugriffs geschieht im Falle von \texttt{Delegation} im Kontext des initialen Objektes. Damit grenzt sich das Prinzip von \texttt{Delegation} klar gegenüber dem Prinzip von \texttt{Forwarding} ab, wobei die Auswertung des Zugriffes im Kontext des Objektes geschieht, an welches delegiert wurde. Das Pattern wird nativ von der Programmiersprache \hyperref[sec:kotlin]{Kotlin} unterstützt und kann somit ohne weiteres direkt als Element der Programmiersprache verwendet werden. Kotlin unterstützt dabei sowohl die Delegation von Interfaces\footnote{Delegation. \url{https://kotlinlang.org/docs/delegation}} sowie die Delegation von einzelnen Eigenschaften\footnote{Delegated Properties. \url{https://kotlinlang.org/docs/delegated-properties.html}}.

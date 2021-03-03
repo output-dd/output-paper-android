@@ -1,4 +1,5 @@
 {
+    "editor.wordWrap": "on",
     "ltex.enabled": true,
     "ltex.language": "de-DE",
     "ltex.additionalRules.motherTongue": "de-DE",
