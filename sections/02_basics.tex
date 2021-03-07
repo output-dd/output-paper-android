@@ -173,15 +173,25 @@ Es werden verschiedene Patterns vorgestellt, die sich im Implementationskonzept 
 Das \textbf{Observer-Pattern} ist ein weiteres Entwurfsmuster, welches in der Android-Entwicklung eine zentrale Rolle spielt. Es gehört zur Kategorie der Verhaltensmuster und dient zur Weitergabe von Änderungen an abhängige Datenstrukturen. Damit lassen sich Ereignis-basierte Abläufe programmieren. In der für die Android-Entwicklung üblichen Variante des Observer-Patterns, informiert ein Objekt (genannt \texttt{Subjekt}) alle  abhängigen Objekte (genannt \texttt{Observer}) von Änderungen und überträgt dabei jeweils eine aktuelle Kopie der Daten als Parameter. Der Ablauf ist in \Cref{fig:observer} gezeigt. Diese Form wird auch \texttt{Push-Update Observer} genannt. 
 
 \begin{figure}[H]
-    \includegraphics[width=0.65\linewidth]{observer.png}
+    \includegraphics[width=0.55\linewidth]{observer.png}
     \caption{Aufbau des Observer-Pattern.}\label{fig:observer}
 \end{figure}
+
+\subsection{Delegation-Pattern}\label{subsec:delegation}
+
+Das \texttt{Delegation-Pattern} ist ein strukturelles Entwurfsmuster, welches die Bildung von Objekten erleichtert und damit als Alternative zur Vererbung die Wiederverwendung von Implementationen erlaubt. Das Prinzip des Patterns beruht auf der Weitergabe von Aufrufen (\enquote{Delegation}) an ein weiteres Objekt. Die Auswertung des Zugriffs geschieht im Falle von \texttt{Delegation} im Kontext des initialen Objektes. Damit grenzt sich das Prinzip von \texttt{Delegation} klar gegenüber dem Prinzip von \texttt{Forwarding} ab, wobei die Auswertung des Zugriffes im Kontext des Objektes geschieht, an welches delegiert wurde. Das Pattern wird nativ von der Programmiersprache \hyperref[sec:kotlin]{Kotlin} unterstützt und kann somit ohne weiteres direkt als Element der Programmiersprache verwendet werden. Kotlin unterstützt dabei sowohl die Delegation von Interfaces\footnote{Delegation. \url{https://kotlinlang.org/docs/delegation}} sowie die Delegation von einzelnen Eigenschaften\footnote{Delegated Properties. \url{https://kotlinlang.org/docs/delegated-properties.html}}.
+
+\begin{figure}[H]
+    \includegraphics[width=1\linewidth]{delegate.png}
+    \caption{Aufbau des Delegation-Pattern.}\label{fig:delegation}
+\end{figure}
+
 
 \subsection{Mediator-Pattern}
 
 Wie auch das \hyperref[sub:observer]{Observer-Pattern} zählt das \texttt{Mediator-Pattern} zu der Klasse von Verhaltensmustern. Das Mediator-Pattern richtet sich dabei an den Informationsaustausch zwischen Objekten. Die Kommunikation findet mittels eines sogenannten \texttt{Mediator}-Objekts statt, welches als Schnittstelle zwischen den beteiligten Objekten dient. Dadurch kann das kooperative Verhalten zentral verwaltet werden, wobei die Implementierung des \texttt{Mediator} unabhängig der beteiligten Objekte erfolgen kann. Somit kann eine lose Kopplung geschaffen werden, was zugleich die Komplexität der beteiligten Objekte mindert. 
 
-
-\subsection{Delegation-Pattern}\label{subsec:delegation}
-
-Das \texttt{Delegation-Pattern} ist ein strukturelles Entwurfsmuster, welches die Bildung von Objekten erleichtert und damit als Alternative zur Vererbung die Wiederverwendung von Implementationen erlaubt. Das Prinzip des Patterns beruht auf der Weitergabe von Aufrufen (\enquote{Delegation}) an ein weiteres Objekt. Die Auswertung des Zugriffs geschieht im Falle von \texttt{Delegation} im Kontext des initialen Objektes. Damit grenzt sich das Prinzip von \texttt{Delegation} klar gegenüber dem Prinzip von \texttt{Forwarding} ab, wobei die Auswertung des Zugriffes im Kontext des Objektes geschieht, an welches delegiert wurde. Das Pattern wird nativ von der Programmiersprache \hyperref[sec:kotlin]{Kotlin} unterstützt und kann somit ohne weiteres direkt als Element der Programmiersprache verwendet werden. Kotlin unterstützt dabei sowohl die Delegation von Interfaces\footnote{Delegation. \url{https://kotlinlang.org/docs/delegation}} sowie die Delegation von einzelnen Eigenschaften\footnote{Delegated Properties. \url{https://kotlinlang.org/docs/delegated-properties.html}}.
+\begin{figure}[H]
+    \includegraphics[width=0.85\linewidth]{mediator.png}
+    \caption{Ablaufdiagramm des Mediator-Pattern.}\label{fig:mediator}
+\end{figure}
